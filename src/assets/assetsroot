@@ -1,0 +1,264 @@
+removed temp
+
+
+    private static byte[] encrypt(byte[] origin, byte[] key) throws Exception {
+        SecretKey secretKey = new SecretKeySpec(key, "AES");
+
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+        return cipher.doFinal(origin);
+    }
+
+    private static byte[] decrypt(byte[] encrypted, byte[] key) throws Exception {
+        SecretKey secretKey = new SecretKeySpec(key, "AES");
+
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        cipher.init(Cipher.DECRYPT_MODE, secretKey);
+        return cipher.doFinal(encrypted);
+    }
+
+
+
+//            Vector2f textureOffset = new Vector2f(
+//                    ch % 16 / 16f,
+//                    1f - ((int)(ch % 256 / 16) / 16f) - 1f/16f
+//            );
+//            shader.setVector2f("textureOffset[" + i + "]", textureOffset);
+
+
+
+            LocalDateTime localDateTime = LocalDateTime.parse(timeStr, DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSS"));
+            long millis = localDateTime
+                    .atZone(ZoneId.systemDefault())
+                    .toInstant().toEpochMilli();
+
+
+
+
+// how about Map<String, Integer>GameSettings.SHADER_DEFINES or SHADER_REPLACES
+
+        for (Map.Entry<String, Object> entry : GameSettings.ShaderDefines.getDefines().entrySet()) {
+            String defineSigns = "#define " + entry.getKey();
+            if (shaderSource.contains(defineSigns)) {
+                String defined = "#define " + entry.getKey() + " " + entry.getValue();
+                shaderSource = shaderSource.replace(defineSigns, defined);
+                Log.info("Load shader define " + defined);
+            }
+        }
+
+    public static class ShaderDefines {
+
+        public static int FONT_INSTANCE_MAX = 64;
+
+        public static Map<String, Object> getDefines() {
+            try {
+                Map<String, Object> map = new HashMap<>();
+                for (Field field : ShaderDefines.class.getFields()) {
+                    map.put(field.getName(), field.get(ShaderDefines.class));
+                }
+                return map;
+            } catch (IllegalAccessException ex) {
+                throw new RuntimeException("Impossible exception");
+            }
+        }
+    }
+
+
+
+
+
+deprecated: unnecessary complexity
+/**
+ * A mainly function is using interface default-get/set override to support Vector3i
+ * and the bad fact is non-necessary and within more complexity,
+ * because block-accessing operate is mostly depend that Object(likes World/Chunk..) while not this Interface
+ */
+
+public interface BlockAccessible {
+
+    void setBlockState(int x, int y, int z, BlockState blockState);
+
+    default void setBlockState(Vector3i blockPos, BlockState blockState) {
+        setBlockState(blockPos.x, blockPos.y, blockPos.z, blockState);
+    }
+
+
+
+    BlockState getBlockState(int x, int y, int z);
+
+    default BlockState getBlockState(Vector3i blockPos) {
+        return getBlockState(blockPos.x, blockPos.y, blockPos.z);
+    }
+
+}
+
+
+
+
+
+
+
+
+
+    191018
+
+    # world should have block-height-limit? (even negative height world..?
+
+    UNKNOWNS MAKE SERIOUS
+    ef have 256 limited, that probably makes you feeling the world is simple and make you non single-minded
+    scening to learning the world.
+
+    think unlimited height is much more possibility though you have not a really idea yet,
+    you are not in a 256-height wide box, you even can build The-End in 10k-height altitude, or in 2k height
+    make fairy-bound islands.
+
+
+    DOES AUTO-HEIGHT PROFESSIONAL?
+    auto-height gives more free space and ways, but also bring some problem, like computing/network load,
+    complexity of program/player, and stability of system of program/player.
+    some player may not like the complexity(?), may they will feeling some unstable and totally-half untrust
+    the world f the system is not pretty great.
+
+    S-N:
+    - axis Y always require more inseparable, like shadow-drop, high-fall...
+    - high altitude always boring f not content
+    - this will make system more complex
+    - player'll extra worry high-place problem
+    S-P:
+    - sounds incredible crazy and free height value(get rid of 256)
+
+
+    # how high-density blocks storage?
+
+    # how about every-block-instancing
+
+    -jvm common spec: Object MEM: [MarkWord:4/8][ClassPointer:4/8][InstanceData][Padding(*8)] (unit: bytes) (so always nearly 1-3'long)
+
+    actually blocks mainly is Logic and Identify
+
+    MEM AND LOADS
+    think f every block is root unit block, that a section have 4096blocks, f y:80- is full, that a
+    chunk has 5*4096=20480blocks filled, every block instance has 2int&objRes=2*4+2*8=24bytes. s a chunk=24*20500=500k bytes
+
+
+
+
+
+
+//    private ExtendedBlockStorage[] storageArray = new ExtendedBlockStorage[16];
+
+
+
+
+
+
+
+191120
+
+Broadphase removed:
+
+    private List<CollisionObject> broadphaseObjects = new ArrayList<>();
+
+    public CollisionObject createEntry(CollisionObject collisionObject) {
+        broadphaseObjects.add(collisionObject);
+        return collisionObject;
+    }
+
+    public void destroyEntry(CollisionObject entry) {
+        broadphaseObjects.remove(entry);
+
+        //pairList.removePairsContainsProxy(wrapped, dispatcher);
+    }
+
+DynamicsWorld removed:
+    private static final Vector3f CONTACT_THRESHOLD = new Vector3f(0.2f, 0.2f, 0.2f);
+    updateAABBs():
+            aabb.grow(CONTACT_THRESHOLD);
+
+
+Test.java rem:
+
+        BufferedImage bufferedImage = new BufferedImage(1024, 1024, BufferedImage.TYPE_INT_ARGB);
+
+        bufferedImage.getGraphics().drawRect(0, 512, 1024, 1);
+        bufferedImage.getGraphics().drawRect(512, 0, 1, 1024);
+        bufferedImage.getGraphics().drawRect(512+256, 0, 1, 1024);
+        bufferedImage.getGraphics().drawRect(512-256, 0, 1, 1024);
+        bufferedImage.getGraphics().drawRect(0, 512+256, 1024, 1);
+        bufferedImage.getGraphics().drawRect(0, 512-256, 1024, 1);
+        for (int i = 0;i < 1024;i++) {
+            int x = i - 512;
+
+            int y = (int)((1-Maths.powerease(1-x/256f, 3)) * 256);
+
+            bufferedImage.getGraphics().drawRect(i, 512-y, 1, 1);
+        }
+        ImageIO.write(bufferedImage, "PNG", new File("out.png"));
+
+
+
+191124
+Gui.java rem:
+    public static class Transform {
+        private float duration;
+        private float passed = 0;
+        private int from;
+        private int to;
+        private Consumer<Integer> updater;
+        private TriFunction<Float, Integer, Integer, Float> interpolator;
+
+        public static final TriFunction<Float, Integer, Integer, Float> ITP_BACKEASE = (t, s, e) -> Maths.lerp(Maths.powerease(t, 1), s, e);
+
+        /**
+         * @param duration seconds
+         * @param updater the interpolation value applicator
+         * @param interpolator the interpolation generator, return interpolation value, args: translation-performing-percent(0.0-1.0), from, to
+         */
+        public Transform(int from, int to, float duration, Consumer<Integer> updater, TriFunction<Float, Integer, Integer, Float> interpolator) {
+            this.duration = duration;
+            this.from = from;
+            this.to = to;
+            this.updater = updater;
+            this.interpolator = interpolator;
+        }
+
+        /**
+         * @return true if should remove this transform (done the transformation)
+         */
+        private boolean apply(float delta) {
+            passed += delta;
+            float percent = passed / duration;
+
+            float v = interpolator.apply(percent, from, to);
+            updater.accept((int)v);
+
+            return passed > duration;
+        }
+    }
+
+
+
+
+Matrix4f.java rotate rem:
+
+
+//        float t00 = dest.m00 * f00 + dest.m01 * f10 + dest.m02 * f20;
+//        float t10 = dest.m10 * f00 + dest.m11 * f10 + dest.m12 * f20;
+//        float t20 = dest.m20 * f00 + dest.m21 * f10 + dest.m22 * f20;
+//        float t30 = dest.m30 * f00 + dest.m31 * f10 + dest.m32 * f20;
+//        float t01 = dest.m00 * f01 + dest.m01 * f11 + dest.m02 * f21;
+//        float t11 = dest.m10 * f01 + dest.m11 * f11 + dest.m12 * f21;
+//        float t21 = dest.m20 * f01 + dest.m21 * f11 + dest.m22 * f21;
+//        float t31 = dest.m30 * f01 + dest.m31 * f11 + dest.m32 * f21;
+//        dest.m02 = dest.m00 * f02 + dest.m01 * f12 + dest.m02 * f22;
+//        dest.m12 = dest.m10 * f02 + dest.m11 * f12 + dest.m12 * f22;
+//        dest.m22 = dest.m20 * f02 + dest.m21 * f12 + dest.m22 * f22;
+//        dest.m32 = dest.m30 * f02 + dest.m31 * f12 + dest.m32 * f22;
+//        dest.m00 = t00;
+//        dest.m10 = t10;
+//        dest.m20 = t20;
+//        dest.m30 = t30;
+//        dest.m01 = t01;
+//        dest.m11 = t11;
+//        dest.m21 = t21;
+//        dest.m31 = t31;
