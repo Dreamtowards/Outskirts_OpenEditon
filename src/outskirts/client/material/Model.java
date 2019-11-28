@@ -5,8 +5,8 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.glDeleteBuffers;
 
 /**
- * uses a public instance field, though "faster" (both exec speed and write/call speed), "convenience"
- * but its given people a Casual feel.. like a tmp design, and feels unsafe cause its some way is a public data.
+ * if uses a public instance field, though "convenience", "faster" (both execution speed and write/call speed)
+ * but its given people a Casual feel.. like a tmp design, and feels unsafe cause its some way is a public uncontrollable data.
  *
  * Method given people more Trust && StrongPower than public Field in subconscious
  * those getter not "get" prefix cause the prefix have some turn down the mainly feel.
