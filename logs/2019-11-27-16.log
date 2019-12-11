@@ -1,4 +1,0 @@
-[19:34:57][GameSettings.java:154][main/INFO]: Loaded GameSettings options. (options.dat)
-[19:34:59][RenderEngine.java:21][main/INFO]: RenderEngine initialized. GL_I: Intel | 4.6.0 - Build 26.20.100.7263
-[19:35:00][AudioEngine.java:20][main/INFO]: AudioEngine initialized. AL_I: OpenAL Community / 1.1 ALSOFT 1.15.1
-[19:35:03][GameSettings.java:168][main/INFO]: Saved GameSettings options. (options.dat)
